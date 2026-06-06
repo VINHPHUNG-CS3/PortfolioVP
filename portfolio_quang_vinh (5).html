@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phùng Trọng Quang Vinh | CS Portfolio</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        dark: '#0f172a',
+                        darker: '#020617',
+                        primary: '#38bdf8', // Cyan
+                        secondary: '#818cf8', // Indigo
+                        accent: '#2dd4bf', // Teal
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #020617; color: #f8fafc; }
+        .glass { background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .gradient-text { background: linear-gradient(to right, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card-hover:hover { transform: translateY(-6px); box-shadow: 0 15px 30px -10px rgba(56, 189, 248, 0.35); border-color: rgba(56, 189, 248, 0.4); }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #334155; }
+        
+        /* Modal Active Animation */
+        #project-modal { display: none; opacity: 0; transition: opacity 0.3s ease; }
+        #project-modal.active { display: flex; opacity: 1; }
+        
+        /* Scientific text formatting inside modal */
+        .prose h3 { color: #38bdf8; font-size: 1.3rem; font-weight: 700; margin-top: 2rem; margin-bottom: 0.75rem; font-family: 'JetBrains Mono', monospace; border-left: 4px solid #818cf8; padding-left: 0.75rem; }
+        .prose h4 { color: #2dd4bf; font-size: 1.1rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; font-family: 'JetBrains Mono', monospace; }
+        .prose p { margin-bottom: 1.25rem; color: #cbd5e1; line-height: 1.75; text-align: justify; }
+        .prose ul { list-style-type: none; padding-left: 0; margin-bottom: 1.25rem; }
+        .prose li { position: relative; padding-left: 1.5rem; margin-bottom: 0.75rem; color: #cbd5e1; }
+        .prose li::before { content: "→"; position: absolute; left: 0; color: #38bdf8; font-weight: bold; }
+        .prose strong { color: #f8fafc; font-weight: 600; }
+        .prose code { background: #0f172a; padding: 0.2rem 0.4rem; border-radius: 0.25rem; font-family: 'JetBrains Mono', monospace; font-size: 0.9em; color: #2dd4bf; border: 1px solid rgba(255, 255, 255, 0.05); }
+        
+        /* Table styles in modal */
+        .prose table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; margin-bottom: 1.5rem; }
+        .prose th { background: rgba(56, 189, 248, 0.1); color: #38bdf8; text-align: left; padding: 0.75rem; font-size: 0.9rem; font-family: 'JetBrains Mono', monospace; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .prose td { padding: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.875rem; color: #cbd5e1; vertical-align: top; }
+        .prose tr:nth-child(even) { background: rgba(255, 255, 255, 0.02); }
+
+        @keyframes spin-slow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spin-slow 20s linear infinite;
+        }
+
+        @media print {
+            body {
+                background-color: #020617 !important;
+                color: #f8fafc !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .glass {
+                background: rgba(15, 23, 42, 0.95) !important;
+                border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            }
+            nav {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-primary selection:text-darker relative overflow-x-hidden">
+
+    <!-- Navigation Bar -->
+    <nav class="fixed w-full z-40 top-0 transition-all duration-300 glass border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex-shrink-0 font-mono font-bold text-2xl tracking-tighter">
+                    <span class="text-primary">&lt;</span>QuangVinh<span class="text-primary">/&gt;</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#home" class="hover:text-primary transition-colors px-3 py-2 rounded-md text-sm font-mono tracking-wide font-semibold">01. GIỚI THIỆU</a>
+                        <a href="#projects" class="hover:text-primary transition-colors px-3 py-2 rounded-md text-sm font-mono tracking-wide font-semibold">02. DỰ ÁN & BÀI TẬP</a>
+                        <a href="#conclusion" class="hover:text-primary transition-colors px-3 py-2 rounded-md text-sm font-mono tracking-wide font-semibold">03. TỔNG KẾT</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-gray-300 hover:text-white focus:outline-none">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden glass border-t border-white/5 py-4 px-6 space-y-3">
+            <a href="#home" class="block text-gray-300 hover:text-primary transition-colors py-2 font-mono">01. Giới thiệu</a>
+            <a href="#projects" class="block text-gray-300 hover:text-primary transition-colors py-2 font-mono">02. Dự án</a>
+            <a href="#conclusion" class="block text-gray-300 hover:text-primary transition-colors py-2 font-mono">03. Tổng kết</a>
+        </div>
+    </nav>
+
+    <!-- SECTION 1: HERO & ABOUT (Giới thiệu) -->
+    <section id="home" class="min-h-screen flex items-center pt-28 pb-16 relative overflow-hidden">
+        <!-- Tech-styled ambient light shapes -->
+        <div class="absolute top-20 left-10 w-96 h-96 bg-primary/10 rounded-full mix-blend-screen filter blur-3xl opacity-30 animate-pulse"></div>
+        <div class="absolute bottom-10 right-10 w-96 h-96 bg-secondary/10 rounded-full mix-blend-screen filter blur-3xl opacity-30 animate-pulse" style="animation-delay: 2s"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Information Presentation Text -->
+                <div class="lg:col-span-7 order-2 lg:order-1">
+                    <div class="inline-block px-3 py-1.5 rounded-full border border-primary/30 bg-primary/5 text-primary text-xs font-mono mb-6">
+                        ⚡ SYSTEM ARCHITECT & DEVELOPER PORTFOLIO
+                    </div>
+                    <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight mb-4">
+                        Phùng Trọng <br/>
+                        <span class="gradient-text">Quang Vinh</span>
+                    </h1>
+                    <p class="text-lg sm:text-xl text-gray-400 font-mono mb-6 flex items-center gap-2">
+                        <span class="inline-block w-3 h-3 bg-accent rounded-full animate-ping"></span>
+                        <span>&gt; Computer Science @ UET-VNU</span>
+                    </p>
+                    <p class="text-gray-300 text-base sm:text-lg leading-relaxed mb-8 text-justify">
+                        Chào mừng bạn đến với không gian lưu trữ số của tôi. Tôi là sinh viên ngành Khoa học Máy tính tại Trường Đại học Công nghệ - Đại học Quốc gia Hà Nội (UET-VNU). Giao diện này được kiến trúc để hệ thống hóa, trực quan hóa tiến trình rèn luyện kỹ năng số, phân tích khoa học dữ liệu và thực thi đạo đức công nghệ của tôi qua môn học <strong>Nhập môn Công nghệ số và Ứng dụng AI</strong>.
+                    </p>
+                    
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#projects" class="bg-primary hover:bg-sky-400 text-darker font-bold py-3.5 px-8 rounded-xl transition-colors flex items-center gap-2 font-mono text-sm tracking-wide shadow-lg shadow-primary/20">
+                            TRUY CẬP DỰ ÁN <i class="fas fa-arrow-down text-xs"></i>
+                        </a>
+                        <a href="https://github.com/VINHPHUNG-CS3" target="_blank" class="glass hover:bg-white/10 text-white font-semibold py-3.5 px-8 rounded-xl transition-colors flex items-center gap-2 font-mono text-sm tracking-wide">
+                            <i class="fab fa-github text-lg"></i> VINHPHUNG-CS3
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Personal Profile Image Block (Chèn chính xác ảnh TA_07240_4.jpg) -->
+                <div class="lg:col-span-5 order-1 lg:order-2 flex flex-col items-center">
+                    <div class="relative flex items-center justify-center w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96">
+                        <!-- Orbiting decorative lines -->
+                        <div class="absolute inset-0 rounded-full border-2 border-dashed border-primary/30 animate-spin-slow"></div>
+                        <div class="absolute inset-3 rounded-full border border-secondary/20 animate-spin-slow" style="animation-direction: reverse; animation-duration: 10s;"></div>
+                        
+                        <!-- High Quality Circle Portrait Image Box -->
+                        <div class="absolute inset-5 rounded-full border-4 border-slate-800 bg-slate-900 overflow-hidden shadow-[0_0_50px_rgba(56,189,248,0.25)] z-10">
+                            <img src="TA_07240.jpeg"
+                                alt="Phùng Trọng Quang Vinh"
+                                class="w-full h-full object-cover"
+                                style="object-position: center 35%;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scientific & Academic Objectives Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-24">
+                <div class="glass p-8 rounded-2xl border-t border-l border-white/5 card-hover">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/30">
+                            <i class="fas fa-microchip text-xl text-primary animate-pulse"></i>
+                        </div>
+                        <h3 class="text-lg font-bold font-mono tracking-tight text-white">MỤC TIÊU HỌC TẬP</h3>
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed text-justify">
+                        Trở thành một Chuyên gia nghiên cứu và phát triển trí tuệ nhân tạo (AI Engineer). Tập trung khai thác các khía cạnh về học sâu (Deep Learning), thị giác máy tính và ứng dụng máy học có trách nhiệm xã hội.
+                    </p>
+                </div>
+                <div class="glass p-8 rounded-2xl border-t border-l border-white/5 card-hover">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center border border-secondary/30">
+                            <i class="fas fa-layer-group text-xl text-secondary"></i>
+                        </div>
+                        <h3 class="text-lg font-bold font-mono tracking-tight text-white">TƯ DUY PORTFOLIO</h3>
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed text-justify">
+                        Thiết kế cấu trúc trực quan hóa kỹ năng không chỉ đơn thuần để tích lũy tín chỉ học tập, mà là minh chứng học thuật vững chắc cho nhà tuyển dụng về năng lực tổ chức tư liệu, hợp tác và nghiên cứu khoa học.
+                    </p>
+                </div>
+                <div class="glass p-8 rounded-2xl border-t border-l border-white/5 card-hover">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center border border-accent/30">
+                            <i class="fas fa-heart text-xl text-accent"></i>
+                        </div>
+                        <h3 class="text-lg font-bold font-mono tracking-tight text-white">SỞ THÍCH CÁ NHÂN</h3>
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed text-justify">
+                        Thích xem các kênh về công nghệ, thích chơi game, thích xem các video giải trí nước ngoài/phim hoạt hình.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: PROJECTS & ASSIGNMENTS (Dự án & Bài tập) -->
+    <section id="projects" class="py-24 bg-slate-950 border-y border-white/5 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-20">
+                <h2 class="text-sm font-mono text-primary mb-2 tracking-widest uppercase">&lt; academic_credentials &gt;</h2>
+                <h3 class="text-3xl sm:text-4xl font-extrabold mb-4">Báo Cáo Nghiên Cứu & Thực Hành Số</h3>
+                <div class="w-24 h-1 bg-gradient-to-r from-primary to-secondary mx-auto rounded-full"></div>
+                <p class="mt-4 text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">
+                    Tuyển tập kết quả thực hành từ bài 1 tới bài 7 của Phùng Trọng Quang Vinh. Toàn bộ nội dung khoa học và tư duy đạo đức AI đều được tích hợp sâu sắc dưới đây.
+                </p>
+            </div>
+
+            <!-- Scientific Project Cards Grid -->
+            <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Dynamically populated card blocks -->
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: CONCLUSION & INTEGRITY (Tổng kết & Phản tỉnh) -->
+    <section id="conclusion" class="py-24 relative overflow-hidden">
+        <div class="absolute inset-0 bg-cover bg-center opacity-10 filter grayscale" style="background-image: url('scott-graham-5fNmWej4tAA-unsplash.jpg');"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-darker via-dark/95 to-darker"></div>
+        
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="glass p-8 md:p-12 rounded-3xl border border-primary/20 shadow-2xl relative">
+                <i class="fas fa-quote-left text-5xl text-primary/10 absolute top-8 left-8"></i>
+                
+                <h2 class="text-3xl font-extrabold mb-8 text-center text-white font-mono tracking-tight">&lt; reflection_log &gt;</h2>
+                
+                <div class="space-y-8 text-gray-300 text-base md:text-lg leading-relaxed text-justify">
+                    <!-- Trải nghiệm và cảm nhận cá nhân -->
+                    <div>
+                        <h3 class="text-lg font-bold font-mono text-primary flex items-center gap-2 mb-3">
+                            <i class="fas fa-graduation-cap text-sm"></i> 01. TRẢI NGHIỆM VÀ CẢM NHẬN CÁ NHÂN
+                        </h3>
+                        <p class="text-gray-300">
+                            Bước chân vào giảng đường UET với tư cách là một sinh viên Khoa học Máy tính, tôi từng nghĩ thế giới công nghệ của mình sẽ chỉ xoay quanh toán giải tích, các cấu trúc dữ liệu thuần túy và những dòng code khô khan trên terminal. Nhưng môn học <strong>Nhập môn Công nghệ số và Ứng dụng AI</strong> đã hoàn toàn thay đổi định kiến đó. Nó mở ra một lăng kính mới giúp tôi nhìn nhận công nghệ không chỉ như một công cụ kỹ thuật đơn thuần, mà là một hệ sinh thái số có hệ thống, định hình sâu sắc phương pháp tự học và tư duy nghiên cứu khoa học của bản thân.
+                        </p>
+                    </div>
+
+                    <!-- Kiến thức và kỹ năng cốt lõi đạt được -->
+                    <div>
+                        <h3 class="text-lg font-bold font-mono text-primary flex items-center gap-2 mb-3">
+                            <i class="fas fa-book-open text-sm"></i> 02. KIẾN THỨC VÀ KỸ NĂNG CỐT LÕI ĐẠT ĐƯỢC
+                        </h3>
+                        <p class="text-gray-300 mb-4">
+                            Qua chuỗi bài tập thực hành, tôi đã tích lũy được những hành trang số vô cùng giá trị phục vụ trực tiếp cho chặng đường học tập chuyên ngành phía trước:
+                        </p>
+                        <ul class="space-y-3 pl-4 text-gray-400 text-sm md:text-base">
+                            <li class="flex items-start gap-2">
+                                <span class="text-accent">→</span>
+                                <span><strong>Kỹ năng tổ chức hệ thống:</strong> Thiết lập kiến trúc cây thư mục logic đóng vai trò quyết định trong việc tối ưu hóa quản lý mã nguồn, giúp tôi hiểu sâu cách cấu hình Git và tránh các xung đột (conflict) dữ liệu trong các đồ án nhóm sau này.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-accent">→</span>
+                                <span><strong>Kỹ nghệ lệnh cộng tác (Prompt Engineering):</strong> Học được cách giao tiếp hệ thống với các mô hình ngôn ngữ lớn (LLMs) qua khung C-A-R-E và cơ chế Chain-of-Thought, biến AI từ một công cụ tìm đáp án nhanh thành một "bạn đồng hành" phản biện logic lập trình cùng tôi.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-accent">→</span>
+                                <span><strong>Tư duy nghiên cứu học thuật số:</strong> Nắm giữ phương pháp truy vấn toán tử nâng cao và cách khai thác Consensus để thực hiện literature review y khoa một cách khách quan, biết tự truy vết các hốc tri thức khoa học chính thống thay vì tra cứu thông tin thiếu kiểm chứng.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Điểm tâm đắc nhất & Thách thức đã vượt qua -->
+                    <div>
+                        <h3 class="text-lg font-bold font-mono text-primary flex items-center gap-2 mb-3">
+                            <i class="fas fa-trophy text-sm"></i> 03. ĐIỂM TÂM ĐẮC NHẤT & THÁCH THỨC ĐÃ VƯỢT QUA
+                        </h3>
+                        <p class="text-gray-300 mb-3">
+                            <strong>Điểm tâm đắc nhất:</strong> Đó là việc tự xây dựng khung đạo đức cá nhân <code>COFFEE</code> và thấu hiểu vấn đề thiên kiến dữ liệu (Data Bias) trong y tế. Tôi nhận ra một sinh viên Khoa học Máy tính chân chính không chỉ cần tối ưu hóa độ chính xác (accuracy) của mô hình học sâu, mà phải có ý thức bảo mật dữ liệu và trách nhiệm đạo đức cao trước cộng đồng.
+                        </p>
+                        <p class="text-gray-300">
+                            <strong>Thách thức đã vượt qua:</strong> Thử thách lớn nhất của tôi là phải bước ra khỏi vùng an toàn của một "lone-wolf coder" (lập trình viên độc hành) để học cách làm việc cộng tác nhóm số trên các nền tảng Trello, Discord và Google Docs. Việc thống nhất ý kiến và phân rã các đầu việc khoa học giúp tôi cải thiện vượt bậc kỹ năng giao tiếp và làm việc nhóm trong thời đại số.
+                        </p>
+                    </div>
+                    
+                    <!-- Professional Academic Pledge -->
+                    <div class="p-6 bg-slate-950/80 rounded-2xl border-l-4 border-primary my-8 shadow-inner">
+                        <h4 class="text-white font-bold mb-3 flex items-center gap-2 font-mono text-sm">
+                            <i class="fas fa-shield-halved text-primary"></i> CAM KẾT LIÊM CHÍNH HỌC THUẬT
+                        </h4>
+                        <p class="text-sm text-gray-400 leading-relaxed text-justify">
+                            Tôi cam kết toàn bộ các minh chứng, báo cáo học thuật được lưu trữ trong Portfolio này đều là kết quả nghiên cứu độc lập của tôi, Phùng Trọng Quang Vinh. Các công cụ Generative AI chỉ được ứng dụng ở vai trò tham mưu bố cục, cấu trúc dàn trang hoặc kiểm định thuật ngữ; 100% tài liệu khoa học cuối cùng đều được tôi phân tích bằng tư duy phản biện hệ thống và chịu trách nhiệm đạo đức cao nhất.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mt-12 flex flex-col sm:flex-row items-center justify-between gap-6 pt-8 border-t border-white/5">
+                    <div class="flex items-center gap-4">
+                        <!-- Sử dụng chính xác ảnh kỷ yếu chân dung TA_07240_4.jpg của bạn ở cuối trang -->
+                        <img src="TA_07240.jpeg" 
+                             alt="Vinh Signature" 
+                             class="w-16 h-16 rounded-full border-2 border-primary/50 object-cover object-top">
+                        <div>
+                            <h4 class="font-bold text-white text-base">Phùng Trọng Quang Vinh</h4>
+                            <p class="text-xs text-primary font-mono">Computer Science Student - UET-VNU</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-3">
+                        <a href="https://github.com/VINHPHUNG-CS3" target="_blank" class="w-10 h-10 rounded-lg bg-slate-800 hover:bg-primary hover:text-darker transition-all flex items-center justify-center text-white">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="mailto:quangvinh.uet@vnu.edu.vn" class="w-10 h-10 rounded-lg bg-slate-800 hover:bg-primary hover:text-darker transition-all flex items-center justify-center text-white">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Global Footer -->
+    <footer class="bg-darker border-t border-white/5 py-10 text-center">
+        <p class="text-gray-500 font-mono text-xs sm:text-sm tracking-wide">
+            &copy; 2026 PHÙNG TRỌNG QUANG VINH. ALL RIGHTS RESERVED.<br>
+            <span class="text-gray-600 mt-2 block">Phùng Trọng Quang Vinh - Sinh viên Khoa học Máy Tính - Trường Đại học Công Nghệ ĐHQGHN</span>
+        </p>
+    </footer>
+
+    <!-- INTERACTIVE SCIENTIFIC MODAL WINDOW -->
+    <div id="project-modal" class="fixed inset-0 z-50 items-center justify-center bg-black/85 backdrop-blur-md p-4 sm:p-6">
+        <div class="bg-slate-900 border border-slate-700/60 w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] relative transform transition-all duration-300">
+            <!-- Close trigger -->
+            <button id="close-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white bg-slate-800 hover:bg-slate-700 p-2.5 rounded-full transition-colors z-10">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+            
+            <!-- Modal Header -->
+            <div class="p-6 md:p-8 border-b border-slate-800 flex-shrink-0 bg-slate-950/40 rounded-t-2xl">
+                <div class="flex items-center gap-3 mb-2">
+                    <span id="modal-tag" class="px-3 py-1 bg-primary/20 text-primary rounded-full text-xs font-mono font-bold"></span>
+                </div>
+                <h2 id="modal-title" class="text-2xl md:text-3xl font-extrabold text-white"></h2>
+            </div>
+            
+            <!-- Modal Body (Scientific content & figures) -->
+            <div class="p-6 md:p-8 overflow-y-auto modal-content">
+                <div class="mb-8 rounded-xl overflow-hidden border border-slate-800 shadow-lg">
+                    <img id="modal-image" src="" alt="Research Illustration" class="w-full h-72 md:h-96 object-cover" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1200';">
+                </div>
+                <!-- Scientific structured content injection -->
+                <div id="modal-body" class="prose prose-invert max-w-none">
+                    <!-- Dynamic text injection -->
+                </div>
+                
+                <div class="mt-8 pt-6 border-t border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <p class="text-xs text-gray-500 font-mono flex items-center gap-2">
+                        <i class="fas fa-file-invoice text-primary"></i> Verified Academic Data Document
+                    </p>
+                    <button id="close-modal-btn" class="w-full sm:w-auto px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-colors font-mono text-sm tracking-wide">CLOSE_DOCUMENT</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN JAVASCRIPT SYSTEM LOGIC -->
+    <script>
+        // High Quality Academic Portfolio Database from your docx files
+        // Extended and updated to meet standard precisely with Drive Link embedded on every slide.
+        const portfolioDatabase = [
+            {
+                id: 1,
+                tag: "BÀI 1: FILE SYSTEM",
+                title: "Kiến Trúc & Quản Lý Thư Mục Số",
+                shortDesc: "Cấu trúc hệ thống lưu trữ khoa học, chuẩn hóa đường dẫn dữ liệu và phân vùng làm việc logic.",
+                image: "scott-graham-5fNmWej4tAA-unsplash.jpg",
+                content: `
+                    <h3>1. MỤC TIÊU & TIẾN TRÌNH THỰC THI</h3>
+                    <p>Xây dựng hệ thống quản lý tệp tin và cây thư mục tối ưu trên phân vùng ổ đĩa dữ liệu chuyên dụng nhằm quản trị chính xác tài nguyên số, hạn chế tối đa rủi ro thất lạc tài nguyên khi làm việc trong các đồ án khoa học máy tính lâu dài.</p>
+                    
+                    <h3>2. QUY TRÌNH THỰC THI CHI TIẾT (12 BƯỚC THỰC HÀNH CỤC BỘ)</h3>
+                    <ul>
+                        <li><strong>Bước 1 - Mở File Explorer:</strong> Nhấn tổ hợp phím <code>Windows + E</code> hoặc nhấp trực tiếp vào biểu tượng thư mục màu vàng trên thanh tác vụ.</li>
+                        <li><strong>Bước 2 - Chọn phân vùng dữ liệu:</strong> Ở cột bên trái, nhấp vào <strong>This PC</strong>, sau đó nhấp đúp vào ổ đĩa không phải ổ hệ thống (ví dụ: ổ D: hoặc E:). Trường hợp máy chỉ có ổ C:, truy cập vào thư mục <strong>Documents</strong>.</li>
+                        <li><strong>Bước 3 - Khởi tạo thư mục gốc:</strong> Nhấp chuột phải vào khoảng trống -> chọn <code>New -> Folder</code>. Đặt tên là <code>ThucHanh_PhungTrongQuangVinh</code> rồi nhấn Enter.</li>
+                        <li><strong>Bước 4 - Truy cập thư mục:</strong> Nhấp đúp chuột để đi sâu vào bên trong thư mục vừa tạo <code>ThucHanh_PhungTrongQuangVinh</code>.</li>
+                        <li><strong>Bước 5 - Tạo tệp tin văn bản:</strong> Nhấp chuột phải vào khoảng trống -> chọn <code>New -> Text Document</code>. Đặt tên tạm là <code>GhiChu.txt</code> và nhấn Enter.</li>
+                        <li><strong>Bước 6 - Thực hiện đổi tên:</strong> Nhấp chuột phải vào tệp <code>GhiChu.txt</code> -> chọn <code>Rename</code>. Thực hiện sửa đổi tên tệp chính thức thành <code>GhiChuQuanTrong.txt</code>.</li>
+                        <li><strong>Bước 7 - Tạo cấu trúc thư mục con:</strong> Nhấp chuột phải vào vùng trống -> chọn <code>New -> Folder</code>. Đặt tên thư mục này là <code>TaiLieu</code>.</li>
+                        <li><strong>Bước 8 - Thao tác sao chép dữ liệu (Copy & Paste):</strong> Nhấp chuột phải vào tệp <code>GhiChuQuanTrong.txt</code> -> chọn <code>Copy</code> (hoặc sử dụng phím tắt <code>Ctrl + C</code>). Truy cập tiếp vào thư mục con <code>TaiLieu</code>, nhấp chuột phải -> chọn <code>Paste</code> (hoặc sử dụng phím tắt <code>Ctrl + V</code>) để sao chép.</li>
+                        <li><strong>Bước 9 - Thao tác di chuyển dữ liệu (Cut & Paste):</strong> Quay trở lại thư mục gốc. Tạo một tệp mới tên là <code>DiChuyen.txt</code>. Nhấp chuột phải vào tệp này -> chọn <code>Cut</code> (hoặc nhấn <code>Ctrl + X</code>). Mở thư mục <code>TaiLieu</code> và thực hiện dán (<code>Ctrl + V</code>).</li>
+                        <li><strong>Bước 10 - Xóa tệp tin an toàn:</strong> Ở trong thư mục con <code>TaiLieu</code>, nhấp chuột phải vào tệp tin <code>GhiChuQuanTrong.txt</code> -> chọn <code>Delete</code> để đưa tệp tin tạm thời vào Thùng rác (Recycle Bin).</li>
+                        <li><strong>Bước 11 - Xóa vĩnh viễn tệp tin:</strong> Chọn tệp <code>DiChuyen.txt</code>, nhấn giữ phím <code>Shift + Delete</code>. Trình duyệt hệ thống hiển thị cảnh báo xác nhận xóa vĩnh viễn không qua bộ nhớ đệm, click đồng ý.</li>
+                        <li><strong>Bước 12 - Khôi phục từ Thùng rác:</strong> Truy cập ứng dụng <code>Recycle Bin</code> ngoài màn hình Desktop. Click chuột phải vào tệp <code>GhiChuQuanTrong.txt</code> chọn <code>Restore</code> để khôi phục tệp về đúng phân cấp thư mục <code>TaiLieu</code>.</li>
+                    </ul>
+                    
+                    <h3>3. PHÂN TÍCH ƯU VÀ NHƯỢC ĐIỂM HỆ THỐNG PHÂN PHỐI</h3>
+                    <p><strong>Ưu điểm:</strong> Quản lý dữ liệu phân tầng rõ ràng giúp định cấu hình các tệp quản lý phiên bản mã nguồn (như <code>.gitignore</code> trong Git) hoạt động chính xác, đảm bảo không đẩy các tệp nhị phân rác hoặc môi trường cục bộ nặng lên GitHub.</p>
+                    <p><strong>Nhược điểm:</strong> Hệ điều hành Windows có giới hạn độ dài đường dẫn (Max Path Limit là 260 ký tự). Nếu phân cấp thư mục vượt quá 5 lớp hoặc đặt tên quá dài sẽ làm lỗi trình biên dịch (Compilers) khi biên dịch thư viện.</p>
+                    
+                    <div class="mt-8 p-4 rounded-xl border border-primary/20 bg-primary/5 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <i class="fab fa-google-drive text-2xl text-accent"></i>
+                            <div>
+                                <span class="block text-xs font-mono text-gray-400">MINH CHỨNG MINH BẠCH</span>
+                                <span class="block text-sm font-bold text-white">Thư mục Drive lưu trữ sản phẩm thực hành</span>
+                            </div>
+                        </div>
+                        <a href="https://drive.google.com/drive/folders/1gMIk5cnezFJUpYMOWyrICnWC-ks-zzkM?usp=sharing" target="_blank" class="w-full sm:w-auto px-5 py-2.5 bg-primary hover:bg-sky-400 text-darker font-bold text-xs font-mono tracking-wider transition-colors flex items-center justify-center gap-2">
+                            OPEN_GOOGLE_DRIVE <i class="fas fa-external-link-alt text-[10px]"></i>
+                        </a>
+                    </div>
+                `
+            },
+            {
+                id: 2,
+                tag: "BÀI 2: DATA MINING",
+                title: "Khai Thác Dữ Liệu Học Thuật Với Toán Tử",
+                shortDesc: "Ứng dụng tìm kiếm nâng cao để khảo cứu các kiến trúc mạng nơ-ron tích chập (CNN) trong y tế.",
+                image: "jametlene-reskp-3Dtu6_XfqIk-unsplash.jpg",
+                content: `
+                    <h3>1. CHỦ ĐỀ & CÂU HỎI NGHIÊN CỨU SỐ</h3>
+                    <p><strong>Chủ đề nghiên cứu:</strong> Ứng dụng của mạng nơ-ron tích chập (CNN) trong chẩn đoán hình ảnh y tế.</p>
+                    <p>Mục tiêu của bài tập là rèn luyện khả năng truy xuất, sàng lọc và thẩm định các công trình nghiên cứu chính thống từ các nhà xuất bản hàng đầu thông qua toán tử nâng cao, giảm thiểu nhiễu thông tin từ các trang blog cá nhân thiếu kiểm chứng.</p>
+                    
+                    <h3>2. DANH MỤC KHẢO SÁT CHUYÊN SÂU THEO NGUỒN</h3>
+                    <h4>A. Cơ sở dữ liệu học thuật uy tín (Google Scholar/IEEE)</h4>
+                    <ul>
+                        <li>Litjens, G. và cộng sự (2017) 'A survey on deep learning in medical image analysis', <i>Medical Image Analysis</i>, 42, tr. 60-88.</li>
+                        <li>Ronneberger, O., Fischer, P. và Brox, T. (2015) 'U-Net: Convolutional Networks for Biomedical Image Segmentation', In <i>MICCAI</i>, tr. 234-241.</li>
+                    </ul>
+                    <h4>B. Tạp chí khoa học chuyên ngành có chỉ số tác động lớn (High Impact Factor)</h4>
+                    <ul>
+                        <li>Esteva, A. và cộng sự (2017) 'Dermatologist-level classification of skin cancer with deep neural networks', <i>Nature</i>, 542(7639), tr. 115-118.</li>
+                        <li>Rajpurkar, P. và cộng sự (2018) 'Deep learning for chest radiograph diagnosis', <i>PLOS Medicine</i>, 15(11).</li>
+                        <li>Zhou, S.K. và cộng sự (2021) 'Deep learning for medical image analysis: Real-world deployment challenges', <i>IEEE Transactions on Medical Imaging</i>, 40(10), tr. 2454-2465.</li>
+                    </ul>
+                    <h4>C. Sách chuyên khảo được thẩm định</h4>
+                    <ul>
+                        <li>Dougherty, G. (2011) <i>Digital Image Processing for Medical Applications</i>. Cambridge: Cambridge University Press.</li>
+                        <li>Zhou, S.K., Rueckert, D. và Fichtinger, G. (2020) <i>Handbook of Medical Image Computing and Computer Assisted Intervention</i>. London: Academic Press.</li>
+                    </ul>
+                    <h4>D. Các nguồn tri thức và Dataset mở trên Internet</h4>
+                    <ul>
+                        <li>Google AI Blog (2023) <i>Using AI to improve breast cancer screening</i>. [https://ai.googleblog.com]</li>
+                        <li>Tiu, E. (2024) <i>Metrics for Medical Image Segmentation</i>. Towards Data Science. [https://towardsdatascience.com]</li>
+                        <li>Stanford ML Group (2024) <i>CheXpert: A Large Chest Radiograph Dataset</i>. [https://stanfordmlgroup.github.io/competitions/chexpert/]</li>
+                    </ul>
+
+                    <h3>3. BẢNG PHÂN TÍCH VÀ ĐÁNH GIÁ ĐỘ TIN CẬY CỦA TÀI LIỆU KHẢO SÁT</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Loại nguồn</th>
+                                <th>Tên tài liệu / Công trình</th>
+                                <th>Tác giả / Nhà xuất bản</th>
+                                <th>Đánh giá giá trị thực tiễn & Độ tin cậy khoa học</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Tạp chí</td>
+                                <td><strong>Nature (Esteva)</strong></td>
+                                <td>ĐH Stanford & Nature</td>
+                                <td>Độ tin cậy học thuật tuyệt đối nhờ phương pháp thực nghiệm lâm sàng đối chứng chặt chẽ, lượng trích dẫn cực cao ($>8000$).</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>CSDL</td>
+                                <td><strong>U-Net (Ronneberger)</strong></td>
+                                <td>ĐH Freiburg (Đức)</td>
+                                <td>Mô hình kiến trúc phân vùng (Segmentation) chuẩn mực cho hình ảnh y học, là bài viết cơ sở bắt buộc phải trích dẫn trong phân tích CNN y tế.</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Sách</td>
+                                <td><strong>Digital Image Processing</strong></td>
+                                <td>Cambridge University Press</td>
+                                <td>Cung cấp cơ sở toán học và thuật toán xử lý ảnh kinh điển, thông tin đã được thẩm định qua hội đồng xuất bản khoa học lâu đời.</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>Internet</td>
+                                <td><strong>Google AI Blog</strong></td>
+                                <td>Google LLC</td>
+                                <td>Thông tin thực tiễn cao, cập nhật xu hướng công nghệ mới nhanh chóng, tuy nhiên mang tính quảng bá sản phẩm và không có bình duyệt đồng đẳng (Peer-review).</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>Tạp chí</td>
+                                <td><strong>IEEE Transactions</strong></td>
+                                <td>IEEE</td>
+                                <td>Cơ quan uy tín hàng đầu về kỹ thuật điện tử và hình ảnh số, các công trình đều có quy trình thực nghiệm nghiêm ngặt, dữ liệu sạch.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="mt-8 p-4 rounded-xl border border-primary/20 bg-primary/5 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <i class="fab fa-google-drive text-2xl text-accent"></i>
+                            <div>
+                                <span class="block text-xs font-mono text-gray-400">MINH CHỨNG MINH BẠCH</span>
+                                <span class="block text-sm font-bold text-white">Thư mục Drive lưu trữ sản phẩm thực hành</span>
+                            </div>
+                        </div>
+                        <a href="https://drive.google.com/drive/folders/1gMIk5cnezFJUpYMOWyrICnWC-ks-zzkM?usp=sharing" target="_blank" class="w-full sm:w-auto px-5 py-2.5 bg-primary hover:bg-sky-400 text-darker font-bold text-xs font-mono tracking-wider transition-colors flex items-center justify-center gap-2">
+                            OPEN_GOOGLE_DRIVE <i class="fas fa-external-link-alt text-[10px]"></i>
+                        </a>
+                    </div>
+                `
+            },
+            {
+                id: 3,
+                tag: "BÀI 3: PROMPT ENGINEERING",
+                title: "Kỹ Nghệ Lệnh Và Tối Ưu Hóa LLMs",
+                shortDesc: "Vận dụng khung C-A-R-E và Chain-of-Thought giải mã các khái niệm cơ học lượng tử phức tạp.",
+                image: "radowan-nakif-rehan-cYyqhdbJ9TI-unsplash.jpg",
+                content: `
+                    <h3>1. LỰA CHỌN VÀ PHÂN TÍCH TÁC VỤ HỌC TẬP</h3>
+                    <p>Báo cáo tập trung xây dựng, phân tích và thực nghiệm 3 tác vụ cốt lõi đại diện cho các bước tự học kỹ thuật số của sinh viên Khoa học Máy tính:</p>
+                    <ul>
+                        <li><strong>Tác vụ 1 - Tóm tắt học thuật phức tạp:</strong> Phân tích tài liệu cơ chế Chú ý (Attention Mechanism) trong kiến trúc Transformer. Thách thức lớn là tài liệu chứa nhiều phương trình toán học phức tạp, dễ làm người học sa lầy vào chi tiết.</li>
+                        <li><strong>Tác vụ 2 - Giải thích lý thuyết trừu tượng:</strong> Giải thích khái niệm "Sự chồng chập lượng tử" (Quantum Superposition) - một lý thuyết lượng tử phản trực giác thông thường.</li>
+                        <li><strong>Tác vụ 3 - Tạo đề ôn tập phân hóa:</strong> Xây dựng bộ câu hỏi đánh giá theo Thang nhận thức Bloom về chủ đề "Tác động kinh tế của Cách mạng Công nghiệp 4.0".</li>
+                    </ul>
+                    
+                    <h3>2. CÁC PHIÊN BẢN PROMPT VÀ KẾT QUẢ THỬ NGHIỆM</h3>
+                    
+                    <h4>Tác vụ 1: Tóm tắt 'Attention Mechanism'</h4>
+                    <p><strong>Phiên bản 1.1 (Cơ bản):</strong> <code>"Tóm tắt bài viết sau về Attention Mechanism."</code><br>
+                    <i>Kết quả:</i> AI dịch nghĩa thô các câu chữ, văn bản dày đặc, không nêu rõ nguyên nhân ra đời hay sự khác biệt với RNN.</p>
+                    <p><strong>Phiên bản 1.2 (Cải tiến):</strong> <code>"Tóm tắt Attention Mechanism bằng gạch đầu dòng rõ ràng theo 3 mục: 1. Lý do ra đời; 2. Nguyên lý hoạt động; 3. Ưu điểm."</code><br>
+                    <i>Kết quả:</i> Bố cục gọn gàng hơn nhưng phần nguyên lý vẫn chứa các công thức toán khó tiếp cận, thiếu tính trực quan sư phạm.</p>
+                    <p><strong>Phiên bản 1.3 (Nâng cao - Tích hợp Role, CoT và Constraints):</strong> <br>
+                    <code>"Bạn là một Giáo sư Khoa học Máy tính giảng dạy tại UET. Hãy tóm tắt tài liệu về Attention Mechanism dưới đây qua các bước (Chain-of-Thought): Bước 1: Chỉ ra điểm nghẽn của RNN khi xử lý chuỗi dài; Bước 2: Dùng một ẩn dụ đời thường để giải nghĩa việc tính trọng số chú ý; Bước 3: Đóng gói thành 3 phần: Bối cảnh, Cơ chế lõi, và Tác động cách mạng. Điều kiện: Không dùng công thức toán phức tạp, giới hạn dưới 400 từ."</code><br>
+                    <i>Kết quả:</i> AI phản hồi xuất sắc, đưa ra ẩn dụ mắt người quét tranh để tập trung vào chủ thể chính (trọng số cao) và làm mờ nền (trọng số thấp).</p>
+                    
+                    <h4>Tác vụ 2: Giải thích 'Sự chồng chập lượng tử'</h4>
+                    <p><strong>Phiên bản 2.1 (Cơ bản):</strong> <code>"Giải thích thế nào là chồng chập lượng tử."</code><br>
+                    <i>Kết quả:</i> Trả về định nghĩa hàn lâm đầy thuật ngữ không gian Hilbert, hàm sóng, gây ngợp cho người học phổ thông.</p>
+                    <p><strong>Phiên bản 2.2 (Cải tiến):</strong> <code>"Giải thích chồng chập lượng tử cho học sinh lớp 12 không chuyên lý, dùng ví dụ thực tế và tránh dùng toán."</code><br>
+                    <i>Kết quả:</i> AI sử dụng ví dụ đồng xu đang quay (vừa sấp vừa ngửa). Dễ hiểu hơn nhưng văn phong khô khan, chưa kích thích tư duy.</p>
+                    <p><strong>Phiên bản 2.3 (Nâng cao - Few-shot Prompting):</strong> <br>
+                    <code>"Bạn là chuyên gia giáo dục STEM. Hãy giải nghĩa 'Sự chồng chập lượng tử' theo phong cách ẩn dụ sinh động tương tự như ví dụ mẫu sau:<br>
+                    [Ví dụ mẫu]: 'Lạm phát giống như đi siêu thị, năm ngoái tờ 100k mua đầy giỏ, năm nay chỉ mua được nửa giỏ do giá cả tăng lên.'<br>
+                    Hãy giải thích theo cấu trúc: 1. Định nghĩa bình dân; 2. Ẩn dụ cốt lõi; 3. Ý nghĩa ứng dụng thực tế."</code><br>
+                    <i>Kết quả:</i> AI đưa ra ẩn dụ cực kỳ sáng tạo về "Núm vặn xoay điều chỉnh độ sáng đèn" (Dimmer Switch) thay vì công tắc bật/tắt nhị phân thông thường.</p>
+
+                    <h4>Tác vụ 3: Đề ôn tập 'Cách mạng Công nghiệp 4.0'</h4>
+                    <p><strong>Phiên bản 3.1 (Cơ bản):</strong> <code>"Tạo bộ câu hỏi ôn tập về Cách mạng công nghiệp 4.0."</code><br>
+                    <i>Kết quả:</i> Cho ra 5 câu hỏi học thuộc lòng đơn giản ("CMCN 4.0 là gì?"), không có tác dụng kích thích tư duy phản biện.</p>
+                    <p><strong>Phiên bản 3.2 (Cải tiến):</strong> <code>"Tạo 5 câu hỏi trắc nghiệm (có đáp án A, B, C, D) và 2 câu tự luận về Cách mạng công nghiệp 4.0, kèm đáp án."</code><br>
+                    <i>Kết quả:</i> Câu hỏi trắc nghiệm quá dễ phân biệt nhiễu, câu hỏi tự luận quá vĩ mô và chung chung.</p>
+                    <p><strong>Phiên bản 3.3 (Nâng cao - Bloom's Taxonomy):</strong> <br>
+                    <code>"Bạn là Chuyên gia Khảo thí. Hãy xây dựng bộ câu hỏi ôn tập phân hóa cao về 'Tác động kinh tế của CMCN 4.0' theo Thang đo Bloom: 2 câu nhận biết, 2 câu thông hiểu/vận dụng, 1 câu phân tích/đánh giá dưới dạng bảng chuyên nghiệp kèm lời giải thích tại sao các phương án nhiễu khác lại sai."</code><br>
+                    <i>Kết quả:</i> Hệ thống xuất bản bảng câu hỏi tình huống kinh tế sắc sảo kèm lời giải thích lý thuyết chi tiết cho từng đáp án nhiễu.</p>
+
+                    <h3>3. BẢNG PHÂN TÍCH MA TRẬN ĐỊNH TÍNH HIỆU QUẢ CỦA PROMPT</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tiêu chí phân tích</th>
+                                <th>Phiên bản Cơ bản</th>
+                                <th>Phiên bản Cải tiến</th>
+                                <th>Phiên bản Nâng cao</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Độ chính xác ngữ cảnh</strong></td>
+                                <td>Thấp (AI tự suy đoán bối cảnh, dễ bị lan man loãng thông tin).</td>
+                                <td>Trung bình (Có định hướng sơ bộ nhưng phạm vi vẫn rộng).</td>
+                                <td>Tuyệt đối (Mô hình bị đóng khung trong vùng tri thức chuyên gia).</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Cấu trúc & Định dạng</strong></td>
+                                <td>Khối văn bản thô dày đặc, rất khó đọc lướt.</td>
+                                <td>Khá tốt (Sử dụng danh sách liệt kê hoặc gạch đầu dòng).</td>
+                                <td>Xuất sắc (Sử dụng bảng biểu, cấu trúc sơ đồ tư duy văn bản).</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Độ sâu kiến thức</strong></td>
+                                <td>Bề nổi, mang tính định nghĩa từ điển thông thường.</td>
+                                <td>Đạt yêu cầu về bề rộng nhưng thiếu phân tích sâu sắc.</td>
+                                <td>Cá nhân hóa cao (Có phản biện, có lập luận logic từng bước).</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kiểm soát ảo giác AI</strong></td>
+                                <td>Kém (Dễ xuất hiện thông tin sai lệch do thiếu ràng buộc).</td>
+                                <td>Trung bình (Bị hạn chế một phần nhờ từ khóa chỉ định).</td>
+                                <td>Tối đa (Cơ chế Chain-of-Thought buộc AI kiểm chứng logic nội tại).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>4. KHUNG NGUYÊN TẮC "C-A-R-E" ĐÚC RÚT</h3>
+                    <ul>
+                        <li><strong>C - Context (Bối cảnh):</strong> Cung cấp rõ ràng mục đích và đối tượng tiếp nhận kiến thức.</li>
+                        <li><strong>A - Act (Vai trò):</strong> Đóng vai chuyên gia đầu ngành để kích hoạt vùng trọng số từ vựng chuyên môn.</li>
+                        <li><strong>R - Restriction (Ràng buộc):</strong> Đặt giới hạn về định dạng, độ dài và các vùng cấm để kiểm soát đầu ra.</li>
+                        <li><strong>E - Exemplar (Ví dụ mẫu):</strong> Cung cấp 1-2 mẫu chất lượng cao (Few-shot) để AI đồng bộ hóa văn phong nhanh chóng.</li>
+                    </ul>
+                    
+                    <div class="mt-8 p-4 rounded-xl border border-primary/20 bg-primary/5 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <i class="fab fa-google-drive text-2xl text-accent"></i>
+                            <div>
+                                <span class="block text-xs font-mono text-gray-400">MINH CHỨNG MINH BẠCH</span>
+                                <span class="block text-sm font-bold text-white">Thư mục Drive lưu trữ sản phẩm thực hành</span>
+                            </div>
+                        </div>
+                        <a href="https://drive.google.com/drive/folders/1gMIk5cnezFJUpYMOWyrICnWC-ks-zzkM?usp=sharing" target="_blank" class="w-full sm:w-auto px-5 py-2.5 bg-primary hover:bg-sky-400 text-darker font-bold text-xs font-mono tracking-wider transition-colors flex items-center justify-center gap-2">
+                            OPEN_GOOGLE_DRIVE <i class="fas fa-external-link-alt text-[10px]"></i>
+                        </a>
+                    </div>
+                `
+            },
+            {
+                id: 4,
+                tag: "BÀI 4: COLLABORATION",
+                title: "Quản Trị Workspace & Hợp Tác Nhóm Số",
+                shortDesc: "Khai thác Trello, Discord và Docs để xây dựng dòng quy trình kiểm soát dự án tối ưu.",
+                image: "marvin-meyer-SYTO3xs06fU-unsplash.jpg",
+                content: `
+                    <h3>1. VAI TRÒ ĐIỀU PHỐI (COORDINATOR) & BỐI CẢNH</h3>
+                    <p>Dự án nhóm thực hiện đề tài nghiên cứu thực tế: <i>"Ảnh hưởng của AI tạo sinh đối với việc học tập của sinh viên năm nhất tại UET"</i>. Với tư cách là Coordinator, tôi chịu trách nhiệm thiết lập không gian, quản lý phân rã đầu việc và duy trì dòng chảy thông tin thông suốt trên 4 công cụ chính: Trello, Google Drive, Google Docs và Discord.</p>
+                    
+                    <h3>2. KIẾN TRÚC WORKSPACE CỘNG TÁC SỐ</h3>
+                    <ul>
+                        <li><strong>Trello:</strong> Thiết lập quy trình Kanban trực quan (To Do, In Progress, Review, Done). Định nghĩa hệ thống nhãn màu (Label) thể hiện mức độ khẩn cấp và thiết lập Deadline nghiêm ngặt cho từng task.</li>
+                        <li><strong>Đồng nhất hồ sơ cá nhân:</strong> Đồng bộ Avatar và hiển thị tên thật thống nhất trên mọi nền tảng để tối ưu hóa khả năng nhận diện, tương tác nhóm.</li>
+                    </ul>
+                    
+                    <h3>3. QUẢN LÝ TIẾN TRÌNH VÀ TƯƠNG TÁC ĐỊNH LƯỢNG</h3>
+                    <p>Để đảm bảo công việc không bị trì trệ, tôi duy trì nghiêm ngặt các chỉ số kỷ luật số:</p>
+                    <ul>
+                        <li><strong>Cập nhật Trello:</strong> Cập nhật trạng thái thẻ công việc tối thiểu $4\text{ lần/tuần}$ dựa trên tiến độ thực tế.</li>
+                        <li><strong>Tương tác nhóm:</strong> Chủ động phản hồi, điều phối công việc trên kênh Discord học tập với tần suất $>10\text{ lượt/tuần}$.</li>
+                    </ul>
+
+                    <h3>4. BẢNG PHÂN TÍCH THÁCH THỨC VÀ GIẢI PHÁP THỰC TIỄN</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Thách thức gặp phải</th>
+                                <th>Giải pháp cá nhân áp dụng</th>
+                                <th>Kết quả / Giá trị đạt được</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Trôi thông tin:</strong> Quyết định quan trọng bị trôi mất trong dòng tin nhắn chat liên tục của nhóm.</td>
+                                <td>Sử dụng tính năng "Ghim tin nhắn" trên Discord và chuyển hóa ngay lập tức các quyết định thành các thẻ công việc (Trello Card).</td>
+                                <td>Mọi thành viên đều nắm bắt chính xác nhiệm vụ mà không cần lội tin nhắn cũ.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Xung đột dữ liệu:</strong> Nhiều người cùng chỉnh sửa một đoạn văn thô dẫn đến đè dữ liệu hoặc mất ý tưởng gốc của nhau.</td>
+                                <td>Đề xuất cả nhóm sử dụng chế độ đề xuất <code>Suggesting</code> và bình luận <code>Comments</code> thay vì chỉnh sửa trực tiếp trên Google Docs.</td>
+                                <td>Bảo toàn toàn bộ đóng góp cá nhân, tạo không gian phản biện học thuật dân chủ và lịch sự.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tiến độ ảo:</strong> Thành viên báo cáo hoàn thành công việc bằng miệng nhưng không cập nhật trên hệ thống quản lý.</td>
+                                <td>Thiết lập quy trình "Check-in nhanh 15 phút" mỗi tối qua voice chat Discord và sử dụng bộ lọc Filter Deadline trên Trello.</td>
+                                <td>Coordinator nắm bắt chính xác tiến độ thực tế để có phương án điều phối nhân sự dự phòng kịp thời.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="mt-8 p-4 rounded-xl border border-primary/20 bg-primary/5 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <i class="fab fa-google-drive text-2xl text-accent"></i>
+                            <div>
+                                <span class="block text-xs font-mono text-gray-400">MINH CHỨNG MINH BẠCH</span>
+                                <span class="block text-sm font-bold text-white">Thư mục Drive lưu trữ sản phẩm thực hành</span>
+                            </div>
+                        </div>
+                        <a href="https://drive.google.com/drive/folders/1gMIk5cnezFJUpYMOWyrICnWC-ks-zzkM?usp=sharing" target="_blank" class="w-full sm:w-auto px-5 py-2.5 bg-primary hover:bg-sky-400 text-darker font-bold text-xs font-mono tracking-wider transition-colors flex items-center justify-center gap-2">
+                            OPEN_GOOGLE_DRIVE <i class="fas fa-external-link-alt text-[10px]"></i>
+                        </a>
+                    </div>
+                `
+            },
+            {
+                id: 5,
+                tag: "BÀI 5: CONTENT GENERATION",
+                title: "Sáng Tạo Đa Phương Thức Với AI",
+                shortDesc: "Pipeline phối hợp Gemini, DALL-E 3 và Canva để tạo bộ tài liệu AI Vision công nghiệp.",
+                image: "agung-raharja-urbSCgUxfQ0-unsplash.jpg",
+                content: `
+                    <h3>1. GIỚI THIỆU DỰ ÁN SÁNG TẠO SỐ</h3>
+                    <p>Dự án: <i>"Xây dựng bài thuyết trình chuyên sâu về Ứng dụng AI trong thị giác máy tính công nghiệp (Computer Vision) - Phân loại linh kiện tự động"</i>. Mục tiêu là phối hợp các công cụ AI tạo sinh đa phương thức để tạo ra bộ slide thuyết trình đồng nhất, chất lượng chuyên môn cao và tối ưu hóa thời gian thiết kế.</p>
+                    
+                    <h3>2. CHI TIẾT QUY TRÌNH PHỐI HỢP PIPELINE 3 GIAI ĐOẠN</h3>
+                    <ul>
+                        <li><strong>Giai đoạn 1 - Lên kịch bản nội dung (Google Gemini / ChatGPT):</strong> <br>
+                        <i>Prompt sử dụng:</i> <code>"Hãy đóng vai một chuyên gia về AI Vision, viết một kịch bản chi tiết cho slide thuyết trình về chủ đề 'Quy trình AI phân loại linh kiện trong nhà máy thông minh'. Yêu cầu chia rõ nội dung từng slide, ngôn ngữ chuyên môn nhưng dễ hiểu, có ví dụ về các thuật toán trích xuất đặc điểm."</code><br>
+                        <i>Tích hợp & Sáng tạo ($70\%$ đóng góp cá nhân):</i> AI cung cấp khung xương 6 slide cơ bản. Tôi viết lại toàn bộ nội dung chi tiết học thuật, bổ sung kiến thức sâu sắc về <strong>Feature Extraction</strong> và thuật toán mạng <strong>CNN</strong> từ giáo trình chuyên ngành để đảm bảo tính chuyên môn, đồng thời bổ sung thêm phần tương tác khán giả.</li>
+                        
+                        <li><strong>Giai đoạn 2 - Tạo tài nguyên hình ảnh độc quyền (DALL-E 3 / Bing Image Creator):</strong> <br>
+                        <i>Prompt sử dụng:</i> <code>"Một bức ảnh nghệ thuật kỹ thuật số chất lượng cao, góc nhìn từ trên xuống của một dây chuyền sản xuất linh kiện điện tử hiện đại, có các cánh tay robot đang gắp chip, ánh sáng xanh neon cực kỳ chuyên nghiệp, phong cách công nghệ tương lai."</code><br>
+                        <i>Tích hợp & Sáng tạo ($60\%$ đóng góp cá nhân):</i> AI trả về 4 ảnh chất lượng cao nhưng có lỗi nhỏ về cấu trúc hình học ở cánh tay robot. Tôi sử dụng phần mềm đồ họa hậu kỳ để cắt tỉa các chi tiết thừa, chỉnh lại độ bão hòa màu để ăn khớp với tone màu Midnight Blue chủ đạo của toàn bộ bộ slide.</li>
+                        
+                        <li><strong>Giai đoạn 3 - Thiết kế và dàn trang (Canva Magic Design):</strong> <br>
+                        <i>Prompt sử dụng:</i> <code>"Thiết kế bộ slide thuyết trình về công nghệ AI, màu sắc chủ đạo là xanh đậm và bạc, phong cách tối giản, chuyên nghiệp cho giới kỹ thuật."</code><br>
+                        <i>Tích hợp & Sáng tạo ($80\%$ đóng góp cá nhân):</i> Mẫu thiết kế gốc của AI bị lỗi font tiếng Việt và bố cục khá loãng. Tôi chuyển đổi màu nền sang mã màu <code>#0A192F</code>, căn chỉnh lại lề văn bản theo tỷ lệ vàng $1/3$, tự thiết kế sơ đồ so sánh trực quan thay thế cho các icon mặc định nhàm chán của Canva.</li>
+                    </ul>
+
+                    <h3>3. BẢNG PHÂN TÍCH VÀ SO SÁNH HIỆU QUẢ CÔNG CỤ</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tiêu chí</th>
+                                <th>ChatGPT (Văn bản)</th>
+                                <th>Bing Creator (Hình ảnh)</th>
+                                <th>Canva AI (Thiết kế)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Khả năng hiểu Prompt tiếng Việt</strong></td>
+                                <td>Rất tốt, nắm bắt nhanh các thuật ngữ chuyên ngành IT phức tạp.</td>
+                                <td>Khá tốt, tuy nhiên thỉnh thoảng hiểu sai các từ khóa kỹ thuật chuyên sâu.</td>
+                                <td>Trung bình, cần sử dụng từ khóa phong cách cực kỳ rõ ràng, đơn giản.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Độ chính xác của kết quả</strong></td>
+                                <td>Cần kiểm duyệt nghiêm ngặt vì dễ xảy ra hiện tượng "ảo giác" thông tin.</td>
+                                <td>Hình ảnh bắt mắt nhưng thường xuyên mắc lỗi logic về cấu trúc vật lý.</td>
+                                <td>Bố cục sạch sẽ, tuy nhiên font chữ dễ lỗi hiển thị tiếng Việt và thiếu tính đột phá.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>4. SỰ CHUYỂN DỊCH TƯ DUY SÁNG TẠO SỐ</h3>
+                    <p>Sử dụng AI giúp rút ngắn chu trình sản xuất nội dung từ 3 ngày xuống còn 4 giờ làm việc. Tuy nhiên, $80\%$ quỹ thời gian đó chuyển thành thời gian kiểm duyệt, hiệu chỉnh và phản biện thông tin của con người. Vai trò của sinh viên Khoa học Máy tính đã dịch chuyển hoàn toàn từ "người thực thi thủ công" sang "nhà điều phối thông minh", đảm bảo chất lượng khoa học cao nhất cho sản phẩm cuối cùng.</p>
+                    
+                    <div class="mt-8 p-4 rounded-xl border border-primary/20 bg-primary/5 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <i class="fab fa-google-drive text-2xl text-accent"></i>
+                            <div>
+                                <span class="block text-xs font-mono text-gray-400">MINH CHỨNG MINH BẠCH</span>
+                                <span class="block text-sm font-bold text-white">Thư mục Drive lưu trữ sản phẩm thực hành</span>
+                            </div>
+                        </div>
+                        <a href="https://drive.google.com/drive/folders/1gMIk5cnezFJUpYMOWyrICnWC-ks-zzkM?usp=sharing" target="_blank" class="w-full sm:w-auto px-5 py-2.5 bg-primary hover:bg-sky-400 text-darker font-bold text-xs font-mono tracking-wider transition-colors flex items-center justify-center gap-2">
+                            OPEN_GOOGLE_DRIVE <i class="fas fa-external-link-alt text-[10px]"></i>
+                        </a>
+                    </div>
+                `
+            },
+            {
+                id: 6,
+                tag: "BÀI 6: RESPONSIBLE AI",
+                title: "AI Có Trách Nhiệm & Khung Đạo Đức COFFEE",
+                shortDesc: "Phân tích chính sách liêm chính của UET - RMIT và thiết lập 6 ranh giới đạo đức số.",
+                image: "boitumelo-o_tcYADlSt8-unsplash.jpg",
+                content: `
+                    <h3>1. KHẢO CỨU SO SÁNH CHÍNH SÁCH LIÊM CHÍNH HỌC THUẬT</h3>
+                    <ul>
+                        <li><strong>Đại học Công nghệ - ĐHQGHN (UET):</strong> Quy chế được lồng ghép trong Quy định đào tạo và Quy chuẩn Liêm chính học thuật. Sinh viên được khuyến khích dùng AI để tìm tài liệu nhưng nghiêm cấm tuyệt đối mọi hành vi đạo văn, nộp sản phẩm code hoặc văn bản do AI sinh ra hoàn toàn mà không qua chỉnh sửa, tự lập luận.</li>
+                        <li><strong>Đại học RMIT Việt Nam:</strong> Áp dụng khung 3 cấp độ cực kỳ tường minh: (1) Cấm hoàn toàn AI; (2) Cho phép sử dụng có giới hạn (sửa ngữ pháp, gợi ý ý tưởng); (3) Cho phép dùng tự do có khai báo trích dẫn rõ ràng.</li>
+                    </ul>
+                    
+                    <h3>2. THỰC NGHIỆM HỌC TẬP CÓ KIỂM SOÁT VỚI AI</h3>
+                    <p><strong>Nhiệm vụ thực nghiệm:</strong> Chuẩn bị dàn ý và nội dung cốt lõi cho bài thuyết trình "Hồi quy (Regression) trong Machine Learning" bằng Google Gemini / ChatGPT.</p>
+                    <ul>
+                        <li><strong>Lần 1 (Khám phá):</strong> <br>
+                        <i>Prompt:</i> <code>"Đóng vai một chuyên gia Machine Learning, hãy lập dàn ý chi tiết cho bài thuyết trình 10 phút về 'Hồi quy (Regression)' dành cho sinh viên năm nhất chưa có nền tảng toán học sâu. Dàn ý cần có ví dụ thực tế."</code><br>
+                        <i>Kết quả:</i> AI cung cấp dàn ý 5 phần cơ bản kèm ví dụ dự đoán giá nhà quen thuộc.</li>
+                        
+                        <li><strong>Lần 2 (Tinh chỉnh):</strong> <br>
+                        <i>Prompt:</i> <code>"Phần 'Phân loại' đang hơi nhiều lý thuyết. Hãy điều chỉnh lại phần này, tập trung vào Linear Regression (Hồi quy tuyến tính) và thay ví dụ dự đoán giá nhà bằng ví dụ dự đoán điểm thi cuối kỳ dựa trên số giờ học, sử dụng văn phong gần gũi với sinh viên."</code><br>
+                        <i>Kết quả:</i> AI tối ưu hóa theo đúng ngữ cảnh thực tế của sinh viên, trực quan hóa mối quan hệ tuyến tính giữa giờ học và điểm số.</li>
+                        
+                        <li><strong>Đánh giá, Chỉnh sửa & Tích hợp:</strong> Dàn ý của AI rất logic nhưng bỏ qua yếu tố nhiễu (outliers) trong thực tế. Tôi đã tự bổ sung phần phản biện phản tích: "Những cạm bẫy của Hồi quy: Không phải cứ học nhiều là điểm cao (do may mắn, sức khỏe)". Thiết kế slide PowerPoint hoàn toàn thủ công để đảm bảo tính cá nhân hóa.</li>
+                        <li><strong>Khai báo nguồn AI (Trích dẫn minh bạch):</strong> <i>"Cấu trúc của bài thuyết trình này được lên ý tưởng với sự hỗ trợ của Google Gemini (truy cập ngày 6/6/2026). Các nội dung học thuật, ví dụ minh họa và thiết kế hình ảnh hoàn toàn do tác giả tự thực hiện."</i></li>
+                    </ul>
+
+                    <h3>3. KHUNG QUY TẮC ĐẠO ĐỨC CÁ NHÂN "COFFEE" (6 CHỮ VÀNG)</h3>
+                    <ul>
+                        <li><strong>C - Cognitive First (Chủ động tư duy):</strong> Tự phác thảo ý tưởng thuật toán và hướng giải quyết độc lập bằng trí tuệ của mình trước khi hỏi AI.</li>
+                        <li><strong>O - Ownership (Quyền làm chủ):</strong> Chịu trách nhiệm học thuật và pháp lý $100\%$ với mọi dòng code hoặc nội dung nộp lên giảng viên.</li>
+                        <li><strong>F - Fact-check (Kiểm chứng):</strong> Luôn đối chiếu nghiêm ngặt kết quả đầu ra của AI với giáo trình chính thống hoặc các công bố khoa học uy tín để loại trừ lỗi ảo giác AI.</li>
+                        <li><strong>F - Fair Play (Công bằng):</strong> Tuyệt đối không gian lận bằng AI trong phòng thi hoặc các đợt kiểm tra năng lực độc lập của nhà trường.</li>
+                        <li><strong>E - Ethical Data (Đạo đức dữ liệu):</strong> Không đăng tải mã nguồn dự án nhóm bảo mật hoặc thông tin nhạy cảm của trường lên các máy chủ AI công cộng.</li>
+                        <li><strong>E - Explicit Citation (Trích dẫn minh bạch):</strong> Khai báo trung thực, ghi chú rõ ràng các phần việc có sự tham mưu của AI trong tất cả báo cáo lớn.</li>
+                    </ul>
+                    
+                    <div class="mt-8 p-4 rounded-xl border border-primary/20 bg-primary/5 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <i class="fab fa-google-drive text-2xl text-accent"></i>
+                            <div>
+                                <span class="block text-xs font-mono text-gray-400">MINH CHỨNG MINH BẠCH</span>
+                                <span class="block text-sm font-bold text-white">Thư mục Drive lưu trữ sản phẩm thực hành</span>
+                            </div>
+                        </div>
+                        <a href="https://drive.google.com/drive/folders/1gMIk5cnezFJUpYMOWyrICnWC-ks-zzkM?usp=sharing" target="_blank" class="w-full sm:w-auto px-5 py-2.5 bg-primary hover:bg-sky-400 text-darker font-bold text-xs font-mono tracking-wider transition-colors flex items-center justify-center gap-2">
+                            OPEN_GOOGLE_DRIVE <i class="fas fa-external-link-alt text-[10px]"></i>
+                        </a>
+                    </div>
+                `
+            },
+            {
+                id: 7,
+                tag: "BÀI 7: LITERATURE REVIEW",
+                title: "Tổng Quan Tài Liệu Y Khoa Với Consensus",
+                shortDesc: "Nghiên cứu ứng dụng Deep Learning phát hiện ung thư da và giải pháp Học liên kết.",
+                image: "clay-banks-UsBA2nA7iZU-unsplash.jpg",
+                content: `
+                    <h3>1. PHƯƠNG PHÁP NGHIÊN CỨU SỐ VỚI CONSENSUS</h3>
+                    <p><strong>Câu hỏi nghiên cứu:</strong> <i>"How does deep learning improve early detection of skin cancer using dermoscopy images?"</i></p>
+                    <p>Sử dụng công cụ AI học thuật chuyên biệt <strong>Consensus</strong> để trích lọc tri thức từ cơ sở dữ liệu khổng lồ của Semantic Scholar, giới hạn các bài báo uy tín thuộc tạp chí phân hạng Q1/Q2 từ năm 2022 đến 2024.</p>
+                    
+                    <h3>2. BẢNG TỔNG HỢP VÀ SO SÁNH CÁC CÔNG TRÌNH KHOA HỌC TIÊU BIỂU</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Tên bài báo & Năm</th>
+                                <th>Mô hình AI áp dụng</th>
+                                <th>Dataset & Số mẫu</th>
+                                <th>Kết quả chính đạt được</th>
+                                <th>Hạn chế / Hướng phát triển</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Deep Convolutional Neural Networks (2022)</td>
+                                <td>Mạng CNN sâu dựa trên ResNet50.</td>
+                                <td>ISIC 2019 ($25,331$ ảnh soi da).</td>
+                                <td>Độ chính xác đạt $92.4\%$, khả năng phân loại nhanh tổn thương lành tính/ác tính tương đương chuyên gia.</td>
+                                <td>Mô hình có dạng "hộp đen" (Black-box), chưa giải nghĩa được lý do ra quyết định logic.</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Transfer Learning in Melanoma (2023)</td>
+                                <td>Học chuyển giao (Transfer Learning) với MobileNetV2.</td>
+                                <td>HAM10000 ($10,015$ ảnh màu tổn thương).</td>
+                                <td>Giảm thời gian huấn luyện mô hình đến $40\%$ nhưng vẫn duy trì độ chính xác ở mức $90\%$, phù hợp cho thiết bị di động.</td>
+                                <td>Hiệu năng sụt giảm mạnh khi ảnh đầu vào bị nhiễu do điều kiện ánh sáng yếu hoặc da nhiều lông.</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Vision Transformers outperforming CNNs (2024)</td>
+                                <td>Kiến trúc Vision Transformers (ViT) với Attention.</td>
+                                <td>ISIC 2020 ($33,126$ mẫu chất lượng cao).</td>
+                                <td>Đạt F1-score đột phá ở mức $94.1\%$ nhờ khả năng học mối quan hệ ngữ cảnh toàn cục (global context) tốt trên bề mặt da.</td>
+                                <td>Yêu cầu tài nguyên phần cứng (GPU) cực lớn và thời gian huấn luyện lâu hơn nhiều so với CNN.</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>Real-time Mobile Screening (2023)</td>
+                                <td>Lightweight CNN tối ưu hóa trên mobile.</td>
+                                <td>Dữ liệu thử nghiệm lâm sàng thực tế ($5,000$ mẫu).</td>
+                                <td>Thời gian phản hồi dưới $0.5$ giây trên điện thoại, hỗ trợ người dân tự sàng lọc sơ bộ tại nhà rất hiệu quả.</td>
+                                <td>Độ chính xác ở mức $85\%$, dễ xuất hiện dương tính giả, cần bác sĩ chuyên khoa kiểm tra lại.</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>Explainable AI in Dermatology (2024)</td>
+                                <td>XAI sử dụng kỹ thuật Grad-CAM kết hợp CNN.</td>
+                                <td>ISIC Archive mở rộng.</td>
+                                <td>Tự động vẽ bản đồ nhiệt (Heatmaps) khoanh vùng tổn thương, xây dựng niềm tin lâm sàng cho các bác sĩ.</td>
+                                <td>Thuật toán tính toán Grad-CAM làm tăng độ trễ xử lý, giảm hiệu năng thời gian thực.</td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>Federated Learning for Privacy-Preserving (2024)</td>
+                                <td>Học liên kết (Federated Learning) đa trung tâm.</td>
+                                <td>Dữ liệu đa bệnh viện giữ tại chỗ (không tải lên mây).</td>
+                                <td>Đạt độ chính xác $91.5\%$ mà không cần tập trung dữ liệu thô, giải quyết triệt để bài toán bảo mật quyền riêng tư y tế bệnh nhân.</td>
+                                <td>Tốc độ hội tụ và cập nhật trọng số phụ thuộc vào độ ổn định băng thông mạng kết nối giữa các bệnh viện.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>3. KẾT LUẬN & ĐÁNH GIÁ CHUYÊN SÂU</h3>
+                    <ul>
+                        <li><strong>Sự đánh đổi giữa CNN và Vision Transformers (ViT):</strong> CNN (như ResNet) vẫn rất thực tiễn để nhúng vào di động nhờ mô hình nhẹ. Ngược lại, ViT cho độ chính xác cực cao ($94.1\%$) nhờ cơ chế chú ý tự thân (Self-Attention) toàn cục nhưng đánh đổi bằng việc ngốn quá nhiều tài nguyên GPU.</li>
+                        <li><strong>Tính minh bạch của AI (Explainable AI - XAI):</strong> Các giải pháp XAI (như Grad-CAM) giúp bác sĩ hiểu rõ lý do mô hình ra quyết định. Tuy nhiên, thuật toán dễ bị nhiễu do bóng râm hoặc lông trên da bệnh nhân, dẫn đến bản đồ nhiệt bị khoanh sai vị trí thực tế.</li>
+                        <li><strong>Bài toán thiên kiến dữ liệu (Data Bias) & Federated Learning:</strong> Trên $80\%$ mẫu ISIC là da của người da trắng, dẫn đến thiên kiến lớn khi chẩn đoán trên da tối màu của người châu Á. Kiến trúc Học liên kết (Federated Learning) là lời giải hoàn hảo, cho phép các bệnh viện toàn cầu huấn luyện chung mô hình học sâu mà không cần chia sẻ ảnh chụp nhạy cảm của bệnh nhân, bảo vệ quyền riêng tư y tế tuyệt đối.</li>
+                    </ul>
+
+                    <h3>4. DANH MỤC TÀI LIỆU THAM KHẢO CHUẨN KHOA HỌC</h3>
+                    <p>[1] I. Thurnhofer-Hemsi et al., “Skin Lesion Classification Using Ensemble Convolutional Neural Network Architectures,” <i>Mathematics</i>, vol. 10, no. 19, p. 3501, 2022. DOI: <a href="https://doi.org/10.3390/math10193501" target="_blank" class="text-primary hover:underline">https://doi.org/10.3390/math10193501</a></p>
+                    <p>[2] M. A. Al-Masni et al., “Melanoma Detection via Transfer Learning and Data Augmentation,” <i>Diagnostics</i>, vol. 13, no. 4, p. 612, 2023. DOI: <a href="https://doi.org/10.3390/diagnostics13040612" target="_blank" class="text-primary hover:underline">https://doi.org/10.3390/diagnostics13040612</a></p>
+                    <p>[3] S. Gheisari et al., “Derm-ViT: Vision Transformer with Multi-Scale Attention for Lesion Analysis,” <i>Computer Methods and Programs in Biomedicine</i>, vol. 240, 2024. DOI: <a href="https://doi.org/10.1016/j.cmpb.2023.107711" target="_blank" class="text-primary hover:underline">https://doi.org/10.1016/j.cmpb.2023.107711</a></p>
+                    <p>[4] R. Arora et al., “EdgeDerm: A Lightweight CNN Optimized for Real-Time Mobile Screening,” <i>Medical Image Analysis</i>, vol. 91, 2024. DOI: <a href="https://doi.org/10.1016/j.media.2023.103012" target="_blank" class="text-primary hover:underline">https://doi.org/10.1016/j.media.2023.103012</a></p>
+                    
+                    <div class="mt-8 p-4 rounded-xl border border-primary/20 bg-primary/5 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <i class="fab fa-google-drive text-2xl text-accent"></i>
+                            <div>
+                                <span class="block text-xs font-mono text-gray-400">MINH CHỨNG MINH BẠCH</span>
+                                <span class="block text-sm font-bold text-white">Thư mục Drive lưu trữ sản phẩm thực hành</span>
+                            </div>
+                        </div>
+                        <a href="https://drive.google.com/drive/folders/1gMIk5cnezFJUpYMOWyrICnWC-ks-zzkM?usp=sharing" target="_blank" class="w-full sm:w-auto px-5 py-2.5 bg-primary hover:bg-sky-400 text-darker font-bold text-xs font-mono tracking-wider transition-colors flex items-center justify-center gap-2">
+                            OPEN_GOOGLE_DRIVE <i class="fas fa-external-link-alt text-[10px]"></i>
+                        </a>
+                    </div>
+                `
+            }
+        ];
+
+        // Render Cards into DOM
+        const gridElement = document.getElementById('projects-grid');
+        
+        portfolioDatabase.forEach(project => {
+            const card = document.createElement('div');
+            card.className = 'glass rounded-2xl overflow-hidden card-hover group cursor-pointer border border-white/5 flex flex-col h-full';
+            card.innerHTML = `
+                <div class="h-52 overflow-hidden relative border-b border-white/5">
+                    <div class="absolute inset-0 bg-primary/10 group-hover:bg-transparent transition-colors z-10"></div>
+                    <img src="${project.image}" alt="${project.title}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=600';">
+                </div>
+                <div class="p-6 sm:p-8 flex flex-col flex-grow relative bg-slate-900/40">
+                    <span class="text-xs font-mono font-bold text-primary mb-2.5 block">${project.tag}</span>
+                    <h4 class="text-lg sm:text-xl font-bold text-white mb-3 group-hover:text-primary transition-colors duration-300">${project.title}</h4>
+                    <p class="text-sm text-gray-400 mb-6 flex-grow leading-relaxed">${project.shortDesc}</p>
+                    <div class="mt-auto pt-4 border-t border-white/5">
+                        <button class="text-xs font-mono font-bold text-white group-hover:text-primary flex items-center gap-2 transition-colors">
+                            READ_RESEARCH_LOG <i class="fas fa-chevron-right text-[10px] transform group-hover:translate-x-1.5 transition-transform"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            card.addEventListener('click', () => triggerModal(project));
+            gridElement.appendChild(card);
+        });
+
+        // Modal State Controller
+        const modalElement = document.getElementById('project-modal');
+        const closeModalIcon = document.getElementById('close-modal');
+        const closeModalBtnBottom = document.getElementById('close-modal-btn');
+        
+        const triggerModal = (project) => {
+            document.getElementById('modal-tag').textContent = project.tag;
+            document.getElementById('modal-title').textContent = project.title;
+            document.getElementById('modal-image').src = project.image;
+            document.getElementById('modal-body').innerHTML = project.content;
+            
+            modalElement.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+
+        const shutModal = () => {
+            modalElement.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        };
+
+        closeModalIcon.addEventListener('click', shutModal);
+        closeModalBtnBottom.addEventListener('click', shutModal);
+        
+        modalElement.addEventListener('click', (e) => {
+            if (e.target === modalElement) {
+                shutModal();
+            }
+        });
+
+        // Sticky navigation visual update on scroll
+        const navBar = document.querySelector('nav');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 30) {
+                navBar.classList.add('shadow-xl', 'bg-slate-950/95', 'border-b', 'border-white/10');
+            } else {
+                navBar.classList.remove('shadow-xl', 'bg-slate-950/95', 'border-b', 'border-white/10');
+            }
+        });
+
+        // Mobile responsive menu toggle
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        mobileMenu.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+        });
+    </script>
+</body>
+</html>
